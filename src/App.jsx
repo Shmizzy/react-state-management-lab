@@ -78,24 +78,54 @@ const App = () => {
   const [ team, setTeam ] = useState([]);
   const [ money, setMoney ] = useState(100);
   const [ zombieFighters ] = useState(zombieFightersList);
+  const [ totalStrength, updateStrength] = useState(0)
+  const [ totalAgility, updateAgility] = useState(0)
+
 
   const handleAddFighter = (fighter) => {
      if(money >= fighter.price){
-      let total;
+      let totalMoney;
+      let strengthSum;
+      let agilitySum;
       let addFighter = [...team];
-      total = money - fighter.price;
-      setMoney(total);
+      totalMoney = money - fighter.price;
+      agilitySum = totalAgility + fighter.agility;
+      strengthSum = totalStrength + fighter.strength;
+      updateStrength(strengthSum);
+      updateAgility(agilitySum);
+      setMoney(totalMoney);
       addFighter.push(fighter);
       setTeam(addFighter);
     }else {
       console.log('Not enough money');
     }
   }
+  const handleRemoveFighter = (fighter) => {
+        let totalMoney;
+        let strengthSum;
+        let agilitySum;
+        let finalArr = []
+        for(let i = 0; i < team.length; i++){
+          if(fighter.name !== team[i].name){
+            finalArr.push(team[i])
+          }
+        }
+        totalMoney = money + fighter.price;
+        agilitySum = totalAgility - fighter.agility;
+        strengthSum = totalStrength - fighter.strength;
+        updateStrength(strengthSum);
+        updateAgility(agilitySum);
+        setMoney(totalMoney);
+        setTeam(finalArr);
+    
+ }
 
   return (
     <>
     <h1>Zombie Fighters</h1>
     <h3>Money: ${money}</h3>
+    <h3>Strength: {totalStrength}</h3>
+    <h3>Agility: {totalAgility}</h3>
     <h3>Team: {
     team.length === 0 ?
       'Pick some team members!' :
@@ -107,6 +137,7 @@ const App = () => {
         <p>Price: {element.price}</p>
         <p>Strength: {element.strength}</p>
         <p>Agility: {element.agility}</p>
+        <button onClick={() => handleRemoveFighter(element)}>Remove</button>
         </li>
       ))}
       </ul>
